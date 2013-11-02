@@ -13,11 +13,6 @@ class PlaylistController < ApplicationController
   #   end
   # end
 
-  get '/' do
-    Playlist.create
-    redirect '/playlist'
-    #session[:song_votes] = {}
-  end
 
   get '/spotify' do
     @queries = Spotify_Finder.search(params[:search])

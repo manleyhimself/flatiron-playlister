@@ -10,6 +10,7 @@ require_relative '../app/models/voter'
 # require_relative '../lib/spotify'
 require_relative '../spotify-junk/spotify_moc'
 require_relative '../app/controllers/application_controller'
+require_relative '../app/controllers/room_controller'
 require_relative '../app/controllers/playlist_controller'
 
 

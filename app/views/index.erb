@@ -1,4 +1,7 @@
-<form action="/spotify" method="get">
-  <input type="text" name="search" placeholder="enter something">
+Create Room: <form action="/playlist" method="post">
+  <label for="create_name"> </label>
+  <input type="text" name="playlist[name]" id="create_name" placeholder="room name">
+  <label for="create_password"> </label>
+  <input type="password" name="playlist[password]" id="create_password" placeholder="password">
   <input type="submit" value="search">
 </form>
