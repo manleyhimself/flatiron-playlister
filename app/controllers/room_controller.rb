@@ -6,7 +6,7 @@ class RoomController < ApplicationController
 
   post '/playlist' do
     Playlist.create(params[:playlist])
-    redirect '/playlist'
+    redirect "/playlist/#{params[:playlist][:name]}"
   end
 
 end

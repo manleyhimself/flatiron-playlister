@@ -14,43 +14,46 @@ class PlaylistController < ApplicationController
   # end
 
 
-  get '/spotify' do
+  get '/spotify/:name' do
     @queries = Spotify_Finder.search(params[:search])
     session[:queries] = @queries
-    redirect '/playlist'
+    redirect "/playlist/#{params[:name]}"
   end
 
-  post '/playlist/add' do
-    @song = Playlist[1].add_song(params[:song], request.ip)
-    if @song == :user_limit_met
-      redirect '/playlist/user_limit'
-    elsif @song == :playlist_full
-      redirect '/playlist/full'
-    end
-    session[:queries] = nil
-    redirect '/playlist'
-  end
-
-  get '/playlist/user_limit' do
-    erb :user_limit
-  end
-
-  get '/playlist/full' do
-    erb :playlist_full
-  end
-
-  get '/playlist' do 
+   get '/playlist/:name' do 
     @queries = session[:queries]
-    @playlist = Playlist[1]
+    @playlist = Playlist.find(name: params[:name])
     @current_song = @playlist.current_song
     @songs = @playlist.songs_in_queue
     erb :'playlist'
   end
 
-  get '/songs/:id/upvote' do
-    @song = Playlist[1].songs.detect {|song| song.id == params[:id].to_i}
+  post '/playlist/:name/add' do
+    @song = Playlist.find(name: params[:name]).add_song(params[:song], request.ip)
+    if @song == :user_limit_met
+      redirect "/playlist/#{params[:name]}/user_limit"
+    elsif @song == :playlist_full
+      redirect "/playlist//#{params[:name]}/full"
+    end
+    session[:queries] = nil
+    redirect "/playlist/#{params[:name]}"
+  end
+
+  get '/playlist/:name/user_limit' do
+    @playlist = Playlist.find(name: params[:name])
+    erb :user_limit
+  end
+
+  get '/playlist/:name/full' do
+    @playlist = Playlist.find(name: params[:name])
+    erb :playlist_full
+  end
+
+ 
+  get '/playlist/:name/songs/:id/upvote' do
+    @song = Playlist.find(name: params[:name]).songs.detect {|song| song.id == params[:id].to_i}
     @song.vote(request.ip)
-    redirect '/playlist'
+    redirect "/playlist/#{params[:name]}"
   end
 
 end
