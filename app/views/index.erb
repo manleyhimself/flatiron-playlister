@@ -1,7 +1,23 @@
-Create Room: <form action="/playlist" method="post">
-  <label for="create_name"> </label>
-  <input type="text" name="playlist[name]" id="create_name" placeholder="room name">
+<% if @bad_login %>
+Invalid room name or password
+<% end %>
+<% if @room_exists%>
+A room already has this name. 
+<% end %>
+<br>
+<br>
+<form action="/playlist/create" method="post">
+  <label for="create_name"> Create Room:  </label>
+  <input type="text" required name="playlist[name]" id="create_name" placeholder="room name">
   <label for="create_password"> </label>
-  <input type="password" name="playlist[password]" id="create_password" placeholder="password">
+  <input type="password" required name="playlist[password]" id="create_password" placeholder="password">
+  <input type="submit" value="search">
+</form>
+
+ <form action="/playlist/join" method="post">
+  <label for="join_name"> Join Room: </label>
+  <input type="text" required name="playlist[name]" id="join_name" placeholder="room name">
+  <label for="join_password"> </label>
+  <input type="password" required name="playlist[password]" id="join_password" placeholder="password">
   <input type="submit" value="search">
 </form>

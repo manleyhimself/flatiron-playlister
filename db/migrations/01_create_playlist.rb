@@ -4,6 +4,7 @@ Sequel.migration do
       primary_key :id, :null=>false
       String :name
       String :password
+      String :slug
     end
   end
 

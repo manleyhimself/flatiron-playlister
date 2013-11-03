@@ -1,11 +1,17 @@
 class Playlist < Sequel::Model
   one_to_many :songs
 
+  def slugify!
+    self.slug = self.name.downcase.gsub(' ','-')
+  end
+
+  def before_save
+    self.slugify!
+    super
+  end
+
   def added_by_user(user_ip)
-    self.songs.collect do |song|
-      users_songs ||= []
-      users_songs << song if song.creator_ip == user_ip
-    end
+    self.songs.select { |song| song.creator_ip == user_ip }
   end
 
   def user_limit_met
@@ -51,6 +57,11 @@ class Playlist < Sequel::Model
   def songs_in_queue
     self.song_sort
   end
+
+  def verify_password(password)
+    self.password == password
+  end
+
 
   def before_play
     # should have a song to send to spotifiy play

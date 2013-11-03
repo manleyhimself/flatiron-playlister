@@ -7,21 +7,21 @@
   <% if @songs %>
     <% @songs.each_with_index do |song, i| %>
       <% if i < 15 %>
-        <li> <%= song.upvotes %> - <a href="/playlist/<%= @playlist.name %>/songs/<%= song.id %>/upvote">  ۩  </a>   <%= song.song_name %>  </li>
+        <li> <%= song.upvotes %> - <a href="/playlist/<%= @playlist.slug %>/songs/<%= song.id %>/upvote">  ۩  </a>   <%= song.song_name %>  </li>
       <% end %>
     <% end %>
   <% end %>
 </ul>
 <br>
 
-<form action="/spotify/<%=@playlist.name%>" method="get">
+<form action="/spotify/<%=@playlist.slug%>" method="get">
   <input type="text" name="search" placeholder="enter something">
   <input type="submit" value="search">
 </form>
 
 <% if @queries %>
   <% @queries.each do |query| %>
-    <form action="/playlist/<%= @playlist.name %>/add" method="post">
+    <form action="/playlist/<%= @playlist.slug %>/add" method="post">
       <input type="hidden" name="song[song_name]" value="<%= query[:song_name]%>">
       <input type="hidden" name="song[artist_name]" value="<%= query[:artist_name]%>">
       <input type="hidden" name="song[spotify_id]" value="<%= query[:spotify_id]%>">

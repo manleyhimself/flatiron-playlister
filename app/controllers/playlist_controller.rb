@@ -1,59 +1,48 @@
 class PlaylistController < ApplicationController
   enable :sessions
 
-  # def upvote_or_unvote(song, ip)
-  #   if session[:song_votes].keys.include?(song.id)
-  #     if session[:song_votes][song.id].include?(ip)
-  #       song.unvote
-  #       session[:song_votes][song.id].delete(ip)
-  #     else
-  #       song.upvote
-  #       session[:song_votes][song.id] << ip
-  #     end
-  #   end
-  # end
-
-
-  get '/spotify/:name' do
+  get '/spotify/:slug' do
     @queries = Spotify_Finder.search(params[:search])
     session[:queries] = @queries
-    redirect "/playlist/#{params[:name]}"
+    redirect "/playlist/#{params[:slug]}"
   end
 
-   get '/playlist/:name' do 
+   get '/playlist/:slug' do 
     @queries = session[:queries]
-    @playlist = Playlist.find(name: params[:name])
+    session[:bad_login] = nil
+    session[:room_exists] = false
+    @playlist = Playlist.find(slug: params[:slug])
     @current_song = @playlist.current_song
     @songs = @playlist.songs_in_queue
     erb :'playlist'
   end
 
-  post '/playlist/:name/add' do
-    @song = Playlist.find(name: params[:name]).add_song(params[:song], request.ip)
+  post '/playlist/:slug/add' do
+    @song = Playlist.find(slug: params[:slug]).add_song(params[:song], request.ip)
     if @song == :user_limit_met
-      redirect "/playlist/#{params[:name]}/user_limit"
+      redirect "/playlist/#{params[:slug]}/user_limit"
     elsif @song == :playlist_full
-      redirect "/playlist//#{params[:name]}/full"
+      redirect "/playlist//#{params[:slug]}/full"
     end
     session[:queries] = nil
-    redirect "/playlist/#{params[:name]}"
+    redirect "/playlist/#{params[:slug]}"
   end
 
-  get '/playlist/:name/user_limit' do
-    @playlist = Playlist.find(name: params[:name])
+  get '/playlist/:slug/user_limit' do
+    @playlist = Playlist.find(slug: params[:slug])
     erb :user_limit
   end
 
-  get '/playlist/:name/full' do
-    @playlist = Playlist.find(name: params[:name])
+  get '/playlist/:slug/full' do
+    @playlist = Playlist.find(slug: params[:slug])
     erb :playlist_full
   end
 
  
-  get '/playlist/:name/songs/:id/upvote' do
-    @song = Playlist.find(name: params[:name]).songs.detect {|song| song.id == params[:id].to_i}
+  get '/playlist/:slug/songs/:id/upvote' do
+    @song = Playlist.find(slug: params[:slug]).songs.detect {|song| song.id == params[:id].to_i}
     @song.vote(request.ip)
-    redirect "/playlist/#{params[:name]}"
+    redirect "/playlist/#{params[:slug]}"
   end
 
 end
